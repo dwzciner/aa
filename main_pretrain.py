@@ -193,31 +193,58 @@ def main_worker(gpu, ngpus_per_node, args):
 
     # Data loading code
     traindir = os.path.join(args.data, 'train')
-    normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                     std=[0.229, 0.224, 0.225])
+    # normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
+    #                                  std=[0.229, 0.224, 0.225])
+    normalize = transforms.Normalize(mean=[0.5, 0.5, 0.5],
+                                     std=[0.5, 0.5, 0.5])
 
     # follow MoCov3's augmentation recipe
+    # augmentation1 = [
+    #     transforms.RandomResizedCrop(224, scale=(0.2, 1.)),
+    #     transforms.RandomApply([
+    #         transforms.ColorJitter(0.4, 0.4, 0.2, 0.1)  # not strengthened
+    #     ], p=0.8),
+    #     transforms.RandomGrayscale(p=0.2),
+    #     transforms.RandomApply([mec.loader.GaussianBlur([.1, 2.])], p=1.0),
+    #     transforms.RandomHorizontalFlip(),
+    #     transforms.ToTensor(),
+    #     normalize
+    # ]
+    #
+    # augmentation2 = [
+    #     transforms.RandomResizedCrop(224, scale=(0.2, 1.)),
+    #     transforms.RandomApply([
+    #         transforms.ColorJitter(0.4, 0.4, 0.2, 0.1)  # not strengthened
+    #     ], p=0.8),
+    #     transforms.RandomGrayscale(p=0.2),
+    #     transforms.RandomApply([mec.loader.GaussianBlur([.1, 2.])], p=0.1),
+    #     transforms.RandomApply([mec.loader.Solarize()], p=0.2),
+    #     transforms.RandomHorizontalFlip(),
+    #     transforms.ToTensor(),
+    #     normalize
+    # ]
+
     augmentation1 = [
-        transforms.RandomResizedCrop(224, scale=(0.2, 1.)),
+        transforms.RandomResizedCrop(32, scale=(0.2, 1.)),  # 调整为32x32
         transforms.RandomApply([
-            transforms.ColorJitter(0.4, 0.4, 0.2, 0.1)  # not strengthened
+            transforms.ColorJitter(0.4, 0.4, 0.2, 0.1)  # 颜色扰动
         ], p=0.8),
-        transforms.RandomGrayscale(p=0.2),
-        transforms.RandomApply([mec.loader.GaussianBlur([.1, 2.])], p=1.0),
-        transforms.RandomHorizontalFlip(),
+        transforms.RandomGrayscale(p=0.2),  # 灰度化
+        transforms.RandomApply([mec.loader.GaussianBlur([.1, 1.])], p=1.0),  # 高斯模糊
+        transforms.RandomHorizontalFlip(),  # 水平翻转
         transforms.ToTensor(),
         normalize
     ]
 
     augmentation2 = [
-        transforms.RandomResizedCrop(224, scale=(0.2, 1.)),
+        transforms.RandomResizedCrop(32, scale=(0.2, 1.)),  # 调整为32x32
         transforms.RandomApply([
-            transforms.ColorJitter(0.4, 0.4, 0.2, 0.1)  # not strengthened
+            transforms.ColorJitter(0.4, 0.4, 0.2, 0.1)  # 颜色扰动
         ], p=0.8),
-        transforms.RandomGrayscale(p=0.2),
-        transforms.RandomApply([mec.loader.GaussianBlur([.1, 2.])], p=0.1),
-        transforms.RandomApply([mec.loader.Solarize()], p=0.2),
-        transforms.RandomHorizontalFlip(),
+        transforms.RandomGrayscale(p=0.2),  # 灰度化
+        transforms.RandomApply([mec.loader.GaussianBlur([.1, 1.])], p=0.1),  # 高斯模糊
+        transforms.RandomApply([mec.loader.Solarize()], p=0.2),  # 曝光
+        transforms.RandomHorizontalFlip(),  # 水平翻转
         transforms.ToTensor(),
         normalize
     ]
